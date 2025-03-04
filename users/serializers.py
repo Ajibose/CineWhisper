@@ -56,7 +56,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
 
     class Meta:
-        fields = "_all__"
+        model = User
+        fields = "__all__"
         read_only_fields = ["user_id", "created_at", "updated_at"]
 
 
