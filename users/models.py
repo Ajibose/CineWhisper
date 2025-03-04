@@ -9,6 +9,10 @@ class User(AbstractUser):
     """
     Custom User model extending Django's AbstractUser
     """
+    # Override the fields to remove them.
+    first_name = None
+    last_name = None
+
     user_id  = models.UUIDField(
             primary_key=True, default=uuid.uuid4,
             editable=False

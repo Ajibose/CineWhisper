@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+import uuid
+
 
 class Movie(models.Model):
     """Model to store movies from tmdb"""

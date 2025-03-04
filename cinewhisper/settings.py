@@ -110,6 +110,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+    "USER_ID_FIELD": "user_id",
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
@@ -121,8 +122,11 @@ SIMPLE_JWT = {
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'Basic': {
-            'type': 'basic'
+        'JWT': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Enter your JWT token as: Bearer <your_token>'
         },
 
         'Session': {
@@ -149,7 +153,7 @@ DATABASES = {
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWD'),
         'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT', default='5433'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
 

@@ -64,9 +64,11 @@ def bulk_upsert_movies(movies: list):
             "vote_average": movie.get("vote_average", 0.0),
             "vote_count": movie.get("vote_count", 0)
         }
+        movie["tmdb_id"] = movie["id"]
+        del movie["id"]
         
-        if movie["id"] in existing_movies:
-            existing_movie = existing_movies[movie["id"]]
+        if movie["tmdb_id"] in existing_movies:
+            existing_movie = existing_movies[movie["tmdb_id"]]
             for key, value in parsed_data.items():
                 setattr(existing_movie, key, value)
             movies_to_update.append(existing_movie)
@@ -82,7 +84,6 @@ def bulk_upsert_movies(movies: list):
                 "adult", "original_language", "genre_ids", "popularity",
                 "release_date", "video", "vote_average", "vote_count"
             ])
-    
     cache.set("trending_movies", movies, timeout=7200)
     logger.info("Successfully fetched, cached, and stored trending movies.")
 
@@ -113,9 +114,11 @@ def bulk_upsert_tv_shows(tv_shows: list):
             "vote_count": show.get("vote_count", 0),
             "origin_country": show.get("origin_country", [])
         }
+        show["tmdb_id"] = show["id"]
+        del show["id"]
         
-        if show["id"] in existing_tv_shows:
-            existing_show = existing_tv_shows[show["id"]]
+        if show["tmdb_id"] in existing_tv_shows:
+            existing_show = existing_tv_shows[show["tmdb_id"]]
             for key, value in parsed_data.items():
                 setattr(existing_show, key, value)
             tv_shows_to_update.append(existing_show)

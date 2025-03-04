@@ -60,6 +60,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["user_id", "created_at", "updated_at"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Import FavouriteSerializer here to avoid circular imports
+        from .serializers import FavouriteSerializer
+        self.fields['favourites'] = FavouriteSerializer(many=True, read_only=True)
+
 
 class FavouriteSerializer(serializers.ModelSerializer):
     """Serializer for the favourite model"""
@@ -78,3 +84,5 @@ class FavouriteSerializer(serializers.ModelSerializer):
         if not model_class.objects.filter(id=data["object_id"]).exists():
             raise serializers.ValidationError("Invalid object_id: No matching movie or TV show found.")
         return data
+
+

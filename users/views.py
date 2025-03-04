@@ -36,11 +36,12 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'put', 'patch', 'delete']
+    lookup_field = "user_id"
 
     def get_queryset(self):
         user = getattr(self.request, 'user', None)
-        if not user or isinstance(user, AnonymousUser) or not user.is_authenticated:
-            return User.objects.none()
+        if not hasattr(self, 'request') or not self.request.user.is_authenticated:
+             return User.objects.none()
 
         return User.objects.filter(pk=user.pk)
 
