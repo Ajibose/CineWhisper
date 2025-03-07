@@ -40,7 +40,8 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cinewhisper.up.railway.app']
 
-CSRF_TRUSTED_ORIGINS = ['https://cinewhisper.up.railway.app']
+# CSRF_TRUSTED_ORIGINS = ['https://cinewhisper.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 
 # Application definition
