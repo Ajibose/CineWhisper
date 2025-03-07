@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cinewhisper-service
+  labels:
+    app: cinewhisper
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: cinewhisper
+
