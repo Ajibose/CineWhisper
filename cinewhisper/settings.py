@@ -16,6 +16,7 @@ import logging.config
 import json_log_formatter
 import environ
 import os
+import dj_database_url
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -35,7 +36,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-e7582)3#un3)yq*6d18#6y5ml3d^@0_u8l+a8h5e!k+2n3u_^a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -146,16 +147,19 @@ AUTH_USER_MODEL = 'users.User'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT', default='5432'),
+if DEBUG:
+    # Development settings
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://ibrahim:ibra12aji@localhost:5432/cinewhisper'
+        )
     }
-}
+else:
+    # Production settings
+    DATABASES = {
+        'default': dj_database_url.config(default=env('DB_PRODUCTION_URL'))
+    }
+
 
 CACHES = {
     "default": {
