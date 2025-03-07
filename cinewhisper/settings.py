@@ -38,7 +38,9 @@ SECRET_KEY = 'django-insecure-e7582)3#un3)yq*6d18#6y5ml3d^@0_u8l+a8h5e!k+2n3u_^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cinewhisper.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = ['https://cinewhisper.up.railway.app']
 
 
 # Application definition
@@ -164,7 +166,7 @@ else:
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": env(REDIS),
     }
 }
 
