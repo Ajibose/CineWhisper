@@ -86,7 +86,7 @@ def bulk_upsert_movies(movies: list):
                 "release_date", "video", "vote_average", "vote_count"
             ])
 
-    cache.set("trending_movies", movies, timeout=7200)
+    cache.set("trending_movies", movies, timeout=14400)
     logger.info("Successfully fetched, cached, and stored trending movies.")
 
 def bulk_upsert_tv_shows(tv_shows: list):
@@ -139,7 +139,7 @@ def bulk_upsert_tv_shows(tv_shows: list):
                 "first_air_date", "vote_average", "vote_count", "origin_country"
             ])
 
-    cache.set("trending_tv_shows", tv_shows, timeout=7200)
+    cache.set("trending_tv_shows", tv_shows, timeout=14400)
     logger.info("Successfully fetched, cached, and stored trending TV shows.")
 
 @shared_task
