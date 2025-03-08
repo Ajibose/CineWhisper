@@ -1,3 +1,2 @@
 web: gunicorn cinewhisper.wsgi
-worker: celery -A cinewhisper worker --loglevel=info
-beat: celery -A cinewhisper beat --loglevel=info
+web: celery -A cinewhisper worker --loglevel=info & celery -A cinewhisper beat --loglevel=info & python manage.py migrate && gunicorn cinewhisper.wsgi
