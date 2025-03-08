@@ -117,8 +117,8 @@ def bulk_upsert_tv_shows(tv_shows: list):
             "first_air_date": parse_date(show.get("first_air_date")),
             "vote_average": show.get("vote_average", 0.0),
             "vote_count": show.get("vote_count", 0),
-            "origin_country": json.dumps(show.get("origin_country", []))  # ✅ Store as JSON
-        }
+            "origin_country": show.get("origin_country", [])
+            }
 
         if parsed_data["tmdb_id"] in existing_tv_shows:
             existing_show = existing_tv_shows[parsed_data["tmdb_id"]]
