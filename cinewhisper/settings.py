@@ -133,21 +133,21 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization',
             'description': 'Enter your JWT token as: Bearer <your_token>'
         },
-
-        'Session': {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization',
-        }
-    }
+    },
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
+    "VALIDATOR_URL": None,
 }
+
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 CORS_ALLOWED_ORIGINS = [
         "https://cinewhisper.up.railway.app",
+        "https://editor.swagger.io",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 CORS_ALLOW_HEADERS = ["*"]
