@@ -174,7 +174,7 @@ CACHES = {
 CELERY_BEAT_SCHEDULE = {
     'fetch-trending-every-hour': {
         'task': 'movies.tasks.fetch_trending_movies_shows',
-        'schedule': 30.0,
+        'schedule': 3600.0,
     },
 }
 
