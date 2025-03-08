@@ -59,7 +59,7 @@ def bulk_upsert_movies(movies: list):
             "poster_path": movie.get("poster_path", ""),
             "adult": movie.get("adult", False),
             "original_language": movie.get("original_language", ""),
-            "genre_ids": show.get("genre_ids", []), 
+            "genre_ids": movie.get("genre_ids", []), 
             "popularity": movie.get("popularity", 0.0),
             "release_date": parse_date(movie.get("release_date")),
             "video": movie.get("video", False),
