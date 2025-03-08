@@ -1,5 +1,6 @@
 import logging
 import requests
+import json
 from django.conf import settings
 from django.core.cache import cache
 from celery import shared_task
