@@ -59,7 +59,7 @@ def bulk_upsert_movies(movies: list):
             "poster_path": movie.get("poster_path", ""),
             "adult": movie.get("adult", False),
             "original_language": movie.get("original_language", ""),
-            "genre_ids": json.dumps(movie.get("genre_ids", [])),  # Store as JSON string
+            "genre_ids": show.get("genre_ids", []), 
             "popularity": movie.get("popularity", 0.0),
             "release_date": parse_date(movie.get("release_date")),
             "video": movie.get("video", False),
@@ -112,7 +112,7 @@ def bulk_upsert_tv_shows(tv_shows: list):
             "poster_path": show.get("poster_path", ""),
             "adult": show.get("adult", False),
             "original_language": show.get("original_language", ""),
-            "genre_ids": json.dumps(show.get("genre_ids", [])),  # ✅ Store as JSON
+            "genre_ids": show.get("genre_ids", []),
             "popularity": show.get("popularity", 0.0),
             "first_air_date": parse_date(show.get("first_air_date")),
             "vote_average": show.get("vote_average", 0.0),
