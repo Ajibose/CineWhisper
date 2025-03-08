@@ -137,6 +137,7 @@ SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
     "JSON_EDITOR": True,
     "VALIDATOR_URL": None,
+    "DEFAULT_API_URL": "https://cinewhisper.up.railway.app",
 }
 
 
