@@ -40,6 +40,7 @@ CineWhisper is a robust backend system for a movie recommendation web applicatio
 ## Architecture
 
 ### Project Structure
+```bash
 ├ core/
 ├ movies/
 ├ users/
@@ -47,7 +48,8 @@ CineWhisper is a robust backend system for a movie recommendation web applicatio
 ├ manage.py
 ├ requirements.txt
 ├ .env
-└ README.md           
+└ README.md
+```
 
 
 ## Tech Stack
@@ -127,13 +129,6 @@ Interactive API documentation is available at:
 - **ReDoc:** [http://localhost:8000/api/docs/redoc/](http://localhost:8000/api/docs/redoc/)
 
 
-## API Documentation
-
-Interactive API documentation is available at:
-
-- **Swagger UI:** [http://localhost:8000/api/docs/swagger/](http://localhost:8000/api/docs/swagger/)
-- **ReDoc:** [http://localhost:8000/api/docs/redoc/](http://localhost:8000/api/docs/redoc/)
-
 ---
 
 ## Contributing
@@ -150,7 +145,7 @@ Contributions are welcome! To contribute:
     git add .
     git commit -m "feat: describe your changes"
    ```
-4. Push Your Branch
+4. Push Your Branch to your fork
    ```bash
     git push origin feature/<feature-name>
    ```
