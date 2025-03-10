@@ -129,7 +129,11 @@ Interactive API documentation is available at:
 - **ReDoc:** [http://localhost:8000/api/docs/redoc/](http://localhost:8000/api/docs/redoc/)
 
 
----
+## Hosted Instance
+
+A live version of CineWhisper is hosted at:
+
+- **CineWhisper Live:** [https://cinewhisper.up.railway.app](https://cinewhisper.up.railway.app)
 
 ## Contributing
 
