@@ -21,6 +21,9 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from users.views import MyTokenObtainPairView
+from django.conf import settings
+
+
 schema_view = get_schema_view(
         openapi.Info(
             title="Cine Whisper",
@@ -29,7 +32,7 @@ schema_view = get_schema_view(
         ),
         public=True,
         permission_classes=(permissions.AllowAny,),
-        url="https://cinewhisper.up.railway.app",
+        url=settings.SWAGGER_SCHEMA_URL,
 )
 
 urlpatterns = [

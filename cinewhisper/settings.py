@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+SWAGGER_SCHEMA_URL = env("SWAGGER_SCHEMA_URL", default="http://localhost:8000")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -137,7 +138,7 @@ SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
     "JSON_EDITOR": True,
     "VALIDATOR_URL": None,
-    "DEFAULT_API_URL": "https://cinewhisper.up.railway.app",
+    "DEFAULT_API_URL": SWAGGER_SCHEMA_URL,
 }
 
 
@@ -187,7 +188,7 @@ CACHES = {
 CELERY_BEAT_SCHEDULE = {
     'fetch-trending-every-hour': {
         'task': 'movies.tasks.fetch_trending_movies_shows',
-        'schedule': 7200.0,
+        'schedule': 30.0, #7200
     },
 }
 

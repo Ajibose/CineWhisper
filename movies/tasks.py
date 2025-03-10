@@ -66,6 +66,8 @@ def bulk_upsert_movies(movies: list):
             "vote_average": movie.get("vote_average", 0.0),
             "vote_count": movie.get("vote_count", 0)
         }
+        movie["tmdb_id"] = movie["id"]
+        del movie["id"]
 
         if parsed_data["tmdb_id"] in existing_movies:
             existing_movie = existing_movies[parsed_data["tmdb_id"]]
@@ -77,7 +79,7 @@ def bulk_upsert_movies(movies: list):
 
     with transaction.atomic():
         if movies_to_create:
-            Movie.objects.bulk_create(movies_to_create, ignore_conflicts=True)  # ✅ Avoid duplicate errors
+            Movie.objects.bulk_create(movies_to_create, ignore_conflicts=True)
 
         if movies_to_update:
             Movie.objects.bulk_update(movies_to_update, [
@@ -118,7 +120,10 @@ def bulk_upsert_tv_shows(tv_shows: list):
             "vote_average": show.get("vote_average", 0.0),
             "vote_count": show.get("vote_count", 0),
             "origin_country": show.get("origin_country", [])
-            }
+        }
+
+        show["tmdb_id"] = show["id"]
+        del show["id"]
 
         if parsed_data["tmdb_id"] in existing_tv_shows:
             existing_show = existing_tv_shows[parsed_data["tmdb_id"]]
