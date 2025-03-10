@@ -15,7 +15,6 @@ class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     permission_classes = [permissions.AllowAny]
-    lookup_field = "movie_id"
 
     @action(detail=False, methods=['get'], url_path='trending')
     def trending_movies(self, request):
@@ -43,7 +42,6 @@ class TvShowViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = TvShowSerializer
     permission_classes = [permissions.AllowAny]
-    lookup_field = "show_id"
 
     @action(detail=False, methods=['get'], url_path='trending')
     def trending_tv_shows(self, request):
