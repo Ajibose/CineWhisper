@@ -144,7 +144,7 @@ Contributions are welcome! To contribute:
 2. Create your feature branch:
    ```bash
     git flow feature start <feature-name>
-  ```
+   ```
 3. Commit Your Changes
    ```bash
     git add .
