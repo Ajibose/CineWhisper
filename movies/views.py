@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
 from django.core.cache import cache
-from .models import Movie
+from .models import Movie, TvShow
 from .serializers import MovieSerializer, TvShowSerializer
 
 
@@ -60,7 +60,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         Fetch movie from tmdb API
         """
         TMDB_API_KEY = settings.TMDB_API_KEY
-        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={TMDB_API_KEY}"
+        url = f"https://api.themoviedb.org/3/tv/{tmdb_id}?api_key={TMDB_API_KEY}"
 
         movie_response = requests.get(url)
         if movie_response.status_code == 200:
@@ -76,7 +76,7 @@ class MovieViewSet(viewsets.ModelViewSet):
                 "original_language": movie_response.get("original_language", ""),
                 "genre_ids": genres_id,
                 "popularity": movie_response.get("popularity", 0.0),
-                "release_date": parse_date(movie_response.get("release_date")),
+                "release_date": movie_response.get("release_date"),
                 "video": movie_response.get("video", False),
                 "vote_average": movie_response.get("vote_average", 0.0),
                 "vote_count": movie_response.get("vote_count", 0)
@@ -109,9 +109,42 @@ class TvShowViewSet(viewsets.ModelViewSet):
     ModelViewSet to TvShow
     Also includes custom endpoints for fetching trending movies and trending TV shows
     """
-    queryset = Movie.objects.all()
+    queryset = TvShow.objects.all()
     serializer_class = TvShowSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        """Override to filter by TMDb ID if provided"""
+        queryset = TvShow.objects.all()
+        tmdb_id = self.request.query_params.get('tmdb_id')
+
+        if tmdb_id:
+            try:
+                return queryset.filter(tmdb_id=int(tmdb_id))
+            except ValueError:
+                return TvShow.objects.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        """Custom list method to check TMDb API if not found in local DB """
+        tmdb_id = self.request.query_params.get('tmdb_id')
+        
+        if tmdb_id:
+            queryset = self.get_queryset()
+
+            if queryset.exists():
+                serializer = self.get_serializer(queryset, many=True)
+                return Response(serializer.data)
+
+            # fetch from tmdb api if not in table
+            tmdb_response = self.fetch_show_from_tmdb(tmdb_id)
+            if tmdb_response:
+                return Response(tmdb_response, status=status.HTTP_200_OK)
+
+            return Response({"error": "Tv show not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        return super().list(request, *args, **kwargs)
 
     @action(detail=False, methods=['get'], url_path='trending')
     def trending_tv_shows(self, request):
@@ -128,4 +161,33 @@ class TvShowViewSet(viewsets.ModelViewSet):
         paginator.page_size = request.query_params.get('page_size', 10)
         page = paginator.paginate_queryset(trending_data, request)
 
-        return paginator.get_paginated_response(page) 
+        return paginator.get_paginated_response(page)
+
+
+    def fetch_show_from_tmdb(tmdb_id):
+        """Fetch movie from tmdb API """
+        TMDB_API_KEY = settings.TMDB_API_KEY
+        url = f"https://api.themoviedb.org/3/tv/{tmdb_id}?api_key={TMDB_API_KEY}" 
+
+        show_response = requests.get(url)
+        if show_response.status_code == 200:
+            genres_id = [show_response["genres"]["id"] for show in show_response]
+            parsed_data = { 
+                "tmdb_id": show_response.get("id"), 
+                "backdrop_path": show_response.get("backdrop_path", ""),
+                "name": show_response.get("name", ""),
+                "original_name": show_response.get("original_name", ""),
+                "overview": show_response.get("overview", ""),
+                "poster_path": show_response.get("poster_path", ""),
+                "adult": show_response.get("adult", False),
+                "original_language": show_response.get("original_language", ""),
+                "genre_ids": genres_id,
+                "popularity": show_response.get("popularity", 0.0),
+                "first_air_date": show_response.get("release_date"),
+                "vote_average": show_response.get("vote_average", 0.0),
+                "vote_count": show_response.get("vote_count", 0),
+                "origin_country": show_response.get("origin_country", [])
+            }
+            return parsed_data.json()
+
+        return None
