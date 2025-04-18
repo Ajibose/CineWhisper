@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-e7582)3#un3)yq*6d18#6y5ml3d^@0_u8l+a8h5e!k+2n3u_^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -58,6 +58,7 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 LOCAL_APPS = [
@@ -117,7 +118,13 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
     'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
     'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ROTATE_REFRESH_TOKENS': True,
 }
+
+API_URL = "http://localhost:8000"
+if not DEBUG:
+    API_URL = "https://cinewhisper.up.railway.app"
 
 
 SWAGGER_SETTINGS = {
@@ -128,14 +135,13 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization',
             'description': 'Enter your JWT token as: Bearer <your_token>'
         },
-
-        'Session': {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization',
-        }
-    }
+    },
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
+    "VALIDATOR_URL": None,
+    "DEFAULT_API_URL": API_URL,
 }
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -167,7 +173,7 @@ CACHES = {
 CELERY_BEAT_SCHEDULE = {
     'fetch-trending-every-hour': {
         'task': 'movies.tasks.fetch_trending_movies_shows',
-        'schedule': 30.0,
+        'schedule': 40.0,
     },
 }
 
@@ -231,6 +237,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# URL used to access the media
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
