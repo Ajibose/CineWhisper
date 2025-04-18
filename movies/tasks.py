@@ -77,7 +77,7 @@ def bulk_upsert_movies(movies: list):
 
     with transaction.atomic():
         if movies_to_create:
-            Movie.objects.bulk_create(movies_to_create, ignore_conflicts=True)  # ✅ Avoid duplicate errors
+            Movie.objects.bulk_create(movies_to_create, ignore_conflicts=True)
 
         if movies_to_update:
             Movie.objects.bulk_update(movies_to_update, [
