@@ -43,7 +43,6 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cinewhisper.up.railway.app']
 # CSRF_TRUSTED_ORIGINS = ['https://cinewhisper.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
-
 # Application definition
 
 DJANGO_APPS = [
@@ -62,6 +61,7 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 LOCAL_APPS = [
@@ -122,7 +122,13 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
     'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
     'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ROTATE_REFRESH_TOKENS': True,
 }
+
+API_URL = "http://localhost:8000"
+if not DEBUG:
+    API_URL = "https://cinewhisper.up.railway.app"
 
 
 SWAGGER_SETTINGS = {
@@ -137,7 +143,7 @@ SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
     "JSON_EDITOR": True,
     "VALIDATOR_URL": None,
-    "DEFAULT_API_URL": "https://cinewhisper.up.railway.app",
+    "DEFAULT_API_URL": API_URL,
 }
 
 
@@ -187,7 +193,7 @@ CACHES = {
 CELERY_BEAT_SCHEDULE = {
     'fetch-trending-every-hour': {
         'task': 'movies.tasks.fetch_trending_movies_shows',
-        'schedule': 7200.0,
+        'schedule': 40.0,
     },
 }
 
@@ -251,6 +257,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# URL used to access the media
+MEDIA_URL = '/media/'
 
 
 if not DEBUG:

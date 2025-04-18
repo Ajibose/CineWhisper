@@ -57,12 +57,22 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
-        read_only_fields = ["user_id", "created_at", "updated_at"]
+        read_only_fields = ["user_id", "created_at", "updated_at", "last_login"]
+        exclude = [
+                "is_staff", "is_active", "groups",
+                "user_permissions", "date_joined"
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Import FavouriteSerializer here to avoid circular imports
+
+        # Make all fields not required if the request is PATCH
+        request = self.context.get("request", None)
+        if request and request.method == "PATCH":
+            for field in self.fields.values():
+                field.required = False
+
+        # Import FavouriteSerializer to avoid circular import
         from .serializers import FavouriteSerializer
         self.fields['favourites'] = FavouriteSerializer(many=True, read_only=True)
 
@@ -77,6 +87,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = ["user", "content_type", "object_id", "added_at"]
+
 
     def validate(self, data):
         """Ensure that object_id exists in the specified content_type"""

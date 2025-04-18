@@ -5,6 +5,9 @@ from .serializers import (
         ProfileSerializer, FavouriteSerializer
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.token_blacklist.models import (
+        BlacklistedToken, OutstandingToken
+)
 from .models import Favourite
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions, status
@@ -14,6 +17,9 @@ from django.db import IntegrityError
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.parsers import MultiPartParser, FormParser
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 User = get_user_model()
@@ -35,6 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ProfileSerializer
     permission_classes = [permissions.AllowAny]
+    parser_classes = (MultiPartParser, FormParser)
     http_method_names = ['get', 'put', 'patch', 'delete']
     lookup_field = "user_id"
 
@@ -44,6 +51,36 @@ class UserViewSet(viewsets.ModelViewSet):
              return User.objects.none()
 
         return User.objects.filter(pk=user.pk)
+
+    @swagger_auto_schema(
+            manual_parameters=(
+               openapi.Parameter(
+                   name="profile_picture",
+                    in_=openapi.IN_FORM,
+                    type=openapi.TYPE_FILE,
+                    description="Upload your profile picture",
+                    required=False
+                )
+            )
+        )
+    def put(self, request, *args, **kwargs):
+        super.put(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+
+        try:
+            tokens = OutstandingToken.objects.filter(user=user)
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+        except Exception:
+            return Response(
+                    {'detail': 'Error blacklisting tokens', 'error': str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        self.perform_destroy(user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FavouriteViewSet(viewsets.ModelViewSet):

@@ -5,6 +5,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 import uuid
 
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
+
 class User(AbstractUser):
     """
     Custom User model extending Django's AbstractUser
@@ -19,7 +22,7 @@ class User(AbstractUser):
     )
     
     profile_picture = models.ImageField(
-            upload_to="profile_pictures/",
+            upload_to=upload_to,
             blank=True, null=True
     )
     
